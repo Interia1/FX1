@@ -185,8 +185,8 @@ void OnTick()
       if(currentDir == POSITION_TYPE_SELL && buySignal)  g_trade.CloseAll(g_symbol);
    }
 
-   //--- Open new position
-   if(openPositions == 0 || g_trade.CountPositions(g_symbol) == 0)
+   //--- Open new position (re-count after potential close above)
+   if(g_trade.CountPositions(g_symbol) == 0)
    {
       double slPips = AtrToPips(g_symbol, atr) * SLMultiplier;
       double tpPips = AtrToPips(g_symbol, atr) * TPMultiplier;
