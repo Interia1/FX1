@@ -8,7 +8,8 @@ class CUiModule : public IUiModule
 public:
    bool OnInitUi(const SAppContext &ctx) override
    {
-      (void)ctx;
+      if(ctx.symbol == "")
+         return true;
       return true;
    }
 

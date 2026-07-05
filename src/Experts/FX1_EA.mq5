@@ -77,7 +77,8 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
-   (void)reason;
+   if(reason == -1)
+      Print("Deinit reason: ", reason);
 
    g_ui.OnDeinitUi();
    Comment("");

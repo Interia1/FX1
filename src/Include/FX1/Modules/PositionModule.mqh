@@ -10,8 +10,8 @@ public:
    {
       // Reserved for trailing stop, break-even, partial exits, and time-stop rules.
       // Kept intentionally simple in the architecture scaffold.
-      (void)ctx;
-      (void)snapshot;
+      if(ctx.symbol == "" && snapshot.timestamp == 0)
+         return;
    }
 };
 
