@@ -30,12 +30,6 @@ public:
          return false;
       }
 
-      if(PositionSelect(ctx.symbol))
-      {
-         reason = "position already open";
-         return false;
-      }
-
       reason = "ok";
       return true;
    }
