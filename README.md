@@ -24,3 +24,9 @@ Modular and scalable MT5 AOS architecture scaffold.
 3. Extend `CPositionModule` with break-even, trailing stop, partial exits.
 4. Add session and news filters to `CSafetyModule`.
 5. Add structured logging and persistent state recovery.
+
+## Windows MT5 no-copy workflow
+
+- Quickstart: `docs/MT5_WINDOWS_QUICKSTART.md`
+- Pull latest in one click: `scripts/windows/01_pull_latest.bat`
+- Commit and push in one click: `scripts/windows/02_commit_and_push.bat`
