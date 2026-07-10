@@ -4,8 +4,18 @@
 enum EConditionId
 {
    CONDITION_NONE = 0,
-   CONDITION_P1 = 1
+   CONDITION_P1 = 1,
+   CONDITION_P2 = 2,
+   CONDITION_P3 = 3
 };
+
+bool IsValidConditionId(const EConditionId id)
+{
+   return (id == CONDITION_NONE ||
+           id == CONDITION_P1 ||
+           id == CONDITION_P2 ||
+           id == CONDITION_P3);
+}
 
 enum EAngleCompare
 {
@@ -18,7 +28,7 @@ enum EAngleCompare
 struct SDevSettings
 {
    bool condition_test_mode;
-   int single_condition_id;
+   EConditionId single_condition_id;
 
    bool p1_enabled;
    int p1_max_spread_points;
@@ -50,6 +60,14 @@ struct SDevSettings
    double p1_signal_deg_3;
    EAngleCompare p1_signal_cmp_4;
    double p1_signal_deg_4;
+
+   bool p2_enabled;
+   bool p2_emit_signal;
+   bool p2_buy_signal;
+
+   bool p3_enabled;
+   bool p3_emit_signal;
+   bool p3_buy_signal;
 };
 
 bool IsValidAngleCompare(const EAngleCompare cmp)
@@ -64,7 +82,7 @@ SDevSettings DefaultDevSettings()
 {
    SDevSettings s;
    s.condition_test_mode = false;
-   s.single_condition_id = 0;
+   s.single_condition_id = CONDITION_NONE;
 
    s.p1_enabled = true;
    s.p1_max_spread_points = 25;
@@ -97,26 +115,28 @@ SDevSettings DefaultDevSettings()
    s.p1_signal_cmp_4 = ANGLE_CMP_GREATER_EQUAL;
    s.p1_signal_deg_4 = 0.0;
 
+   s.p2_enabled = false;
+   s.p2_emit_signal = false;
+   s.p2_buy_signal = true;
+
+   s.p3_enabled = false;
+   s.p3_emit_signal = false;
+   s.p3_buy_signal = true;
+
    return s;
 }
 
 bool ValidateDevSettings(const SDevSettings &s, string &err)
 {
-   if(s.single_condition_id < 0)
+   if(!IsValidConditionId(s.single_condition_id))
    {
-      err = "single_condition_id must be >= 0";
+      err = "single_condition_id is invalid";
       return false;
    }
 
-   if(s.condition_test_mode && s.single_condition_id <= 0)
+   if(s.condition_test_mode && s.single_condition_id == CONDITION_NONE)
    {
-      err = "single_condition_id must be > 0 when condition_test_mode is enabled";
-      return false;
-   }
-
-   if(s.condition_test_mode && s.single_condition_id != CONDITION_P1)
-   {
-      err = "single_condition_id is not implemented yet";
+      err = "single_condition_id must not be CONDITION_NONE when condition_test_mode is enabled";
       return false;
    }
 

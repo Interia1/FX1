@@ -29,7 +29,7 @@ input bool InpTradingEnabled = true;
 
 input group "Conditions | Test Harness"
 input bool InpConditionTestMode = false;
-input int InpSingleConditionId = CONDITION_P1;
+input EConditionId InpSingleConditionId = CONDITION_P1;
 
 input group "Conditions | P1 | Core"
 input bool InpP1Enabled = true;
@@ -63,6 +63,16 @@ input EAngleCompare InpP1SignalCmp3 = ANGLE_CMP_GREATER_EQUAL;
 input double InpP1SignalDeg3 = 0.0;
 input EAngleCompare InpP1SignalCmp4 = ANGLE_CMP_GREATER_EQUAL;
 input double InpP1SignalDeg4 = 0.0;
+
+input group "Conditions | P2 | Core"
+input bool InpP2Enabled = false;
+input bool InpP2EmitSignal = false;
+input bool InpP2BuySignal = true;
+
+input group "Conditions | P3 | Core"
+input bool InpP3Enabled = false;
+input bool InpP3EmitSignal = false;
+input bool InpP3BuySignal = true;
 
 SAppContext g_ctx;
 
@@ -125,6 +135,14 @@ int OnInit()
    g_ctx.dev.p1_signal_deg_3 = InpP1SignalDeg3;
    g_ctx.dev.p1_signal_cmp_4 = InpP1SignalCmp4;
    g_ctx.dev.p1_signal_deg_4 = InpP1SignalDeg4;
+
+   g_ctx.dev.p2_enabled = InpP2Enabled;
+   g_ctx.dev.p2_emit_signal = InpP2EmitSignal;
+   g_ctx.dev.p2_buy_signal = InpP2BuySignal;
+
+   g_ctx.dev.p3_enabled = InpP3Enabled;
+   g_ctx.dev.p3_emit_signal = InpP3EmitSignal;
+   g_ctx.dev.p3_buy_signal = InpP3BuySignal;
 
    string err = "";
    if(!ValidateSettings(g_ctx.settings, err))
