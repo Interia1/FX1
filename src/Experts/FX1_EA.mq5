@@ -3,6 +3,7 @@
 #property description "FX1 modular EA architecture scaffold"
 
 #include <FX1/Config/Settings.mqh>
+#include <FX1/Config/DevSettings.mqh>
 #include <FX1/Core/AppContext.mqh>
 #include <FX1/Core/Engine.mqh>
 
@@ -25,6 +26,14 @@ input int InpSlippagePoints = 20;
 input int InpStopLossPoints = 200;
 input int InpTakeProfitPoints = 300;
 input bool InpTradingEnabled = true;
+
+input group "Dev | Condition Testing"
+input bool InpConditionTestMode = false;
+input int InpSingleConditionId = CONDITION_P1;
+input bool InpP1Enabled = true;
+input int InpP1MaxSpreadPoints = 25;
+input bool InpP1EmitSignal = false;
+input bool InpP1BuySignal = true;
 
 SAppContext g_ctx;
 
@@ -55,6 +64,14 @@ int OnInit()
    g_ctx.settings.take_profit_points = InpTakeProfitPoints;
    g_ctx.settings.trading_enabled = InpTradingEnabled;
 
+   g_ctx.dev = DefaultDevSettings();
+   g_ctx.dev.condition_test_mode = InpConditionTestMode;
+   g_ctx.dev.single_condition_id = InpSingleConditionId;
+   g_ctx.dev.p1_enabled = InpP1Enabled;
+   g_ctx.dev.p1_max_spread_points = InpP1MaxSpreadPoints;
+   g_ctx.dev.p1_emit_signal = InpP1EmitSignal;
+   g_ctx.dev.p1_buy_signal = InpP1BuySignal;
+
    string err = "";
    if(!ValidateSettings(g_ctx.settings, err))
    {
@@ -62,7 +79,14 @@ int OnInit()
       return INIT_PARAMETERS_INCORRECT;
    }
 
+   if(!ValidateDevSettings(g_ctx.dev, err))
+   {
+      Print("Dev settings validation failed: ", err);
+      return INIT_PARAMETERS_INCORRECT;
+   }
+
    g_safety.SetMaxSpreadPoints(g_ctx.settings.max_spread_points);
+   g_condition.Configure(g_ctx.dev);
    g_composite.SetPrimary(&g_condition);
 
    g_risk = new CRiskModule(&g_converter);
