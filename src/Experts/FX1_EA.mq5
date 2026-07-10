@@ -27,9 +27,11 @@ input int InpStopLossPoints = 200;
 input int InpTakeProfitPoints = 300;
 input bool InpTradingEnabled = true;
 
-input group "Dev | Condition Testing"
+input group "Conditions | Test Harness"
 input bool InpConditionTestMode = false;
 input int InpSingleConditionId = CONDITION_P1;
+
+input group "Conditions | P1 | Core"
 input bool InpP1Enabled = true;
 input int InpP1MaxSpreadPoints = 25;
 input bool InpP1EmitSignal = false;
@@ -42,7 +44,7 @@ input ENUM_MA_METHOD InpP1StochMaMethod = MODE_SMA;
 input ENUM_STO_PRICE InpP1StochPriceField = STO_LOWHIGH;
 input double InpP1AngleScale = 2.0;
 
-input group "Dev | P1 MAIN Angles"
+input group "Conditions | P1 | MAIN Angles (4 segments)"
 input EAngleCompare InpP1MainCmp1 = ANGLE_CMP_GREATER_EQUAL;
 input double InpP1MainDeg1 = 0.0;
 input EAngleCompare InpP1MainCmp2 = ANGLE_CMP_GREATER_EQUAL;
@@ -52,7 +54,7 @@ input double InpP1MainDeg3 = 0.0;
 input EAngleCompare InpP1MainCmp4 = ANGLE_CMP_GREATER_EQUAL;
 input double InpP1MainDeg4 = 0.0;
 
-input group "Dev | P1 SIGNAL Angles"
+input group "Conditions | P1 | SIGNAL Angles (4 segments)"
 input EAngleCompare InpP1SignalCmp1 = ANGLE_CMP_GREATER_EQUAL;
 input double InpP1SignalDeg1 = 0.0;
 input EAngleCompare InpP1SignalCmp2 = ANGLE_CMP_GREATER_EQUAL;
