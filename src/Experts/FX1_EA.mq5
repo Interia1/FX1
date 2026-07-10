@@ -34,6 +34,33 @@ input bool InpP1Enabled = true;
 input int InpP1MaxSpreadPoints = 25;
 input bool InpP1EmitSignal = false;
 input bool InpP1BuySignal = true;
+input ENUM_TIMEFRAMES InpP1StochTimeframe = PERIOD_CURRENT;
+input int InpP1StochKPeriod = 14;
+input int InpP1StochDPeriod = 3;
+input int InpP1StochSlowing = 3;
+input ENUM_MA_METHOD InpP1StochMaMethod = MODE_SMA;
+input ENUM_STO_PRICE InpP1StochPriceField = STO_LOWHIGH;
+input double InpP1AngleScale = 2.0;
+
+input group "Dev | P1 MAIN Angles"
+input EAngleCompare InpP1MainCmp1 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1MainDeg1 = 0.0;
+input EAngleCompare InpP1MainCmp2 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1MainDeg2 = 0.0;
+input EAngleCompare InpP1MainCmp3 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1MainDeg3 = 0.0;
+input EAngleCompare InpP1MainCmp4 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1MainDeg4 = 0.0;
+
+input group "Dev | P1 SIGNAL Angles"
+input EAngleCompare InpP1SignalCmp1 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1SignalDeg1 = 0.0;
+input EAngleCompare InpP1SignalCmp2 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1SignalDeg2 = 0.0;
+input EAngleCompare InpP1SignalCmp3 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1SignalDeg3 = 0.0;
+input EAngleCompare InpP1SignalCmp4 = ANGLE_CMP_GREATER_EQUAL;
+input double InpP1SignalDeg4 = 0.0;
 
 SAppContext g_ctx;
 
@@ -71,6 +98,31 @@ int OnInit()
    g_ctx.dev.p1_max_spread_points = InpP1MaxSpreadPoints;
    g_ctx.dev.p1_emit_signal = InpP1EmitSignal;
    g_ctx.dev.p1_buy_signal = InpP1BuySignal;
+   g_ctx.dev.p1_stoch_timeframe = InpP1StochTimeframe;
+   g_ctx.dev.p1_stoch_k_period = InpP1StochKPeriod;
+   g_ctx.dev.p1_stoch_d_period = InpP1StochDPeriod;
+   g_ctx.dev.p1_stoch_slowing = InpP1StochSlowing;
+   g_ctx.dev.p1_stoch_ma_method = InpP1StochMaMethod;
+   g_ctx.dev.p1_stoch_price_field = InpP1StochPriceField;
+   g_ctx.dev.p1_angle_scale = InpP1AngleScale;
+
+   g_ctx.dev.p1_main_cmp_1 = InpP1MainCmp1;
+   g_ctx.dev.p1_main_deg_1 = InpP1MainDeg1;
+   g_ctx.dev.p1_main_cmp_2 = InpP1MainCmp2;
+   g_ctx.dev.p1_main_deg_2 = InpP1MainDeg2;
+   g_ctx.dev.p1_main_cmp_3 = InpP1MainCmp3;
+   g_ctx.dev.p1_main_deg_3 = InpP1MainDeg3;
+   g_ctx.dev.p1_main_cmp_4 = InpP1MainCmp4;
+   g_ctx.dev.p1_main_deg_4 = InpP1MainDeg4;
+
+   g_ctx.dev.p1_signal_cmp_1 = InpP1SignalCmp1;
+   g_ctx.dev.p1_signal_deg_1 = InpP1SignalDeg1;
+   g_ctx.dev.p1_signal_cmp_2 = InpP1SignalCmp2;
+   g_ctx.dev.p1_signal_deg_2 = InpP1SignalDeg2;
+   g_ctx.dev.p1_signal_cmp_3 = InpP1SignalCmp3;
+   g_ctx.dev.p1_signal_deg_3 = InpP1SignalDeg3;
+   g_ctx.dev.p1_signal_cmp_4 = InpP1SignalCmp4;
+   g_ctx.dev.p1_signal_deg_4 = InpP1SignalDeg4;
 
    string err = "";
    if(!ValidateSettings(g_ctx.settings, err))

@@ -7,6 +7,14 @@ enum EConditionId
    CONDITION_P1 = 1
 };
 
+enum EAngleCompare
+{
+   ANGLE_CMP_GREATER = 0,
+   ANGLE_CMP_GREATER_EQUAL = 1,
+   ANGLE_CMP_LESS = 2,
+   ANGLE_CMP_LESS_EQUAL = 3
+};
+
 struct SDevSettings
 {
    bool condition_test_mode;
@@ -16,7 +24,41 @@ struct SDevSettings
    int p1_max_spread_points;
    bool p1_emit_signal;
    bool p1_buy_signal;
+
+   ENUM_TIMEFRAMES p1_stoch_timeframe;
+   int p1_stoch_k_period;
+   int p1_stoch_d_period;
+   int p1_stoch_slowing;
+   ENUM_MA_METHOD p1_stoch_ma_method;
+   ENUM_STO_PRICE p1_stoch_price_field;
+   double p1_angle_scale;
+
+   EAngleCompare p1_main_cmp_1;
+   double p1_main_deg_1;
+   EAngleCompare p1_main_cmp_2;
+   double p1_main_deg_2;
+   EAngleCompare p1_main_cmp_3;
+   double p1_main_deg_3;
+   EAngleCompare p1_main_cmp_4;
+   double p1_main_deg_4;
+
+   EAngleCompare p1_signal_cmp_1;
+   double p1_signal_deg_1;
+   EAngleCompare p1_signal_cmp_2;
+   double p1_signal_deg_2;
+   EAngleCompare p1_signal_cmp_3;
+   double p1_signal_deg_3;
+   EAngleCompare p1_signal_cmp_4;
+   double p1_signal_deg_4;
 };
+
+bool IsValidAngleCompare(const EAngleCompare cmp)
+{
+   return (cmp == ANGLE_CMP_GREATER ||
+           cmp == ANGLE_CMP_GREATER_EQUAL ||
+           cmp == ANGLE_CMP_LESS ||
+           cmp == ANGLE_CMP_LESS_EQUAL);
+}
 
 SDevSettings DefaultDevSettings()
 {
@@ -28,6 +70,33 @@ SDevSettings DefaultDevSettings()
    s.p1_max_spread_points = 25;
    s.p1_emit_signal = false;
    s.p1_buy_signal = true;
+
+   s.p1_stoch_timeframe = PERIOD_CURRENT;
+   s.p1_stoch_k_period = 14;
+   s.p1_stoch_d_period = 3;
+   s.p1_stoch_slowing = 3;
+   s.p1_stoch_ma_method = MODE_SMA;
+   s.p1_stoch_price_field = STO_LOWHIGH;
+   s.p1_angle_scale = 2.0;
+
+   s.p1_main_cmp_1 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_deg_1 = 0.0;
+   s.p1_main_cmp_2 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_deg_2 = 0.0;
+   s.p1_main_cmp_3 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_deg_3 = 0.0;
+   s.p1_main_cmp_4 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_deg_4 = 0.0;
+
+   s.p1_signal_cmp_1 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_deg_1 = 0.0;
+   s.p1_signal_cmp_2 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_deg_2 = 0.0;
+   s.p1_signal_cmp_3 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_deg_3 = 0.0;
+   s.p1_signal_cmp_4 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_deg_4 = 0.0;
+
    return s;
 }
 
@@ -54,6 +123,44 @@ bool ValidateDevSettings(const SDevSettings &s, string &err)
    if(s.p1_max_spread_points <= 0)
    {
       err = "p1_max_spread_points must be positive";
+      return false;
+   }
+
+   if(s.p1_stoch_k_period <= 0 || s.p1_stoch_d_period <= 0 || s.p1_stoch_slowing <= 0)
+   {
+      err = "p1 stochastic periods must be positive";
+      return false;
+   }
+
+   if(s.p1_angle_scale <= 0.0)
+   {
+      err = "p1_angle_scale must be positive";
+      return false;
+   }
+
+   if(s.p1_main_deg_1 < -90.0 || s.p1_main_deg_1 > 90.0 ||
+      s.p1_main_deg_2 < -90.0 || s.p1_main_deg_2 > 90.0 ||
+      s.p1_main_deg_3 < -90.0 || s.p1_main_deg_3 > 90.0 ||
+      s.p1_main_deg_4 < -90.0 || s.p1_main_deg_4 > 90.0 ||
+      s.p1_signal_deg_1 < -90.0 || s.p1_signal_deg_1 > 90.0 ||
+      s.p1_signal_deg_2 < -90.0 || s.p1_signal_deg_2 > 90.0 ||
+      s.p1_signal_deg_3 < -90.0 || s.p1_signal_deg_3 > 90.0 ||
+      s.p1_signal_deg_4 < -90.0 || s.p1_signal_deg_4 > 90.0)
+   {
+      err = "p1 angle thresholds must be in range [-90, 90]";
+      return false;
+   }
+
+   if(!IsValidAngleCompare(s.p1_main_cmp_1) ||
+      !IsValidAngleCompare(s.p1_main_cmp_2) ||
+      !IsValidAngleCompare(s.p1_main_cmp_3) ||
+      !IsValidAngleCompare(s.p1_main_cmp_4) ||
+      !IsValidAngleCompare(s.p1_signal_cmp_1) ||
+      !IsValidAngleCompare(s.p1_signal_cmp_2) ||
+      !IsValidAngleCompare(s.p1_signal_cmp_3) ||
+      !IsValidAngleCompare(s.p1_signal_cmp_4))
+   {
+      err = "p1 angle compare mode is invalid";
       return false;
    }
 
