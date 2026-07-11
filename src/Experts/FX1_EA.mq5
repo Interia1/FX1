@@ -3,7 +3,6 @@
 #property description "FX1 modular EA architecture scaffold"
 
 #include <FX1/Config/Settings.mqh>
-#include <FX1/Config/DevSettings.mqh>
 #include <FX1/Core/AppContext.mqh>
 #include <FX1/Core/Engine.mqh>
 
@@ -17,62 +16,20 @@
 #include <FX1/Modules/ChartModule.mqh>
 #include <FX1/Modules/UiModule.mqh>
 
-input long InpMagic = 51001;
-input double InpRiskPercent = 1.0;
-input bool InpUseFixedLot = true;
-input double InpFixedLot = 0.10;
-input int InpMaxSpreadPoints = 25;
-input int InpSlippagePoints = 20;
-input int InpStopLossPoints = 200;
-input int InpTakeProfitPoints = 300;
-input bool InpTradingEnabled = true;
+input group "Zakladne nastavenia"
+input bool InpPovolitObchodovanie = true;   // Povolit obchodovanie
+input long InpMagickeCislo = 51001;         // Magic cislo EA
 
-input group "Conditions | Test Harness"
-input bool InpConditionTestMode = false;
-input EConditionId InpSingleConditionId = CONDITION_P1;
+input group "Riziko a objem"
+input double InpRizikoPercent = 1.0;       // Riziko na obchod (%)
+input bool InpPouzitFixnyLot = true;       // Pouzit fixny lot
+input double InpFixnyLot = 0.10;           // Fixny lot
 
-input group "Conditions | P1 | Core"
-input bool InpP1Enabled = true;
-input int InpP1MaxSpreadPoints = 25;
-input bool InpP1EmitSignal = false;
-input bool InpP1BuySignal = true;
-input ENUM_TIMEFRAMES InpP1StochTimeframe = PERIOD_CURRENT;
-input int InpP1StochKPeriod = 14;
-input int InpP1StochDPeriod = 3;
-input int InpP1StochSlowing = 3;
-input ENUM_MA_METHOD InpP1StochMaMethod = MODE_SMA;
-input ENUM_STO_PRICE InpP1StochPriceField = STO_LOWHIGH;
-input double InpP1AngleScale = 2.0;
-
-input group "Conditions | P1 | MAIN Angles (4 segments)"
-input EAngleCompare InpP1MainCmp1 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1MainDeg1 = 0.0;
-input EAngleCompare InpP1MainCmp2 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1MainDeg2 = 0.0;
-input EAngleCompare InpP1MainCmp3 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1MainDeg3 = 0.0;
-input EAngleCompare InpP1MainCmp4 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1MainDeg4 = 0.0;
-
-input group "Conditions | P1 | SIGNAL Angles (4 segments)"
-input EAngleCompare InpP1SignalCmp1 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1SignalDeg1 = 0.0;
-input EAngleCompare InpP1SignalCmp2 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1SignalDeg2 = 0.0;
-input EAngleCompare InpP1SignalCmp3 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1SignalDeg3 = 0.0;
-input EAngleCompare InpP1SignalCmp4 = ANGLE_CMP_GREATER_EQUAL;
-input double InpP1SignalDeg4 = 0.0;
-
-input group "Conditions | P2 | Core"
-input bool InpP2Enabled = false;
-input bool InpP2EmitSignal = false;
-input bool InpP2BuySignal = true;
-
-input group "Conditions | P3 | Core"
-input bool InpP3Enabled = false;
-input bool InpP3EmitSignal = false;
-input bool InpP3BuySignal = true;
+input group "Exekucia a limity"
+input int InpMaxSpreadBody = 25;       // Max spread (body)
+input int InpMaxSklzBody = 20;         // Max sklz (body)
+input int InpStopLossBody = 200;       // Stop Loss (body)
+input int InpTakeProfitBody = 300;     // Take Profit (body)
 
 SAppContext g_ctx;
 
@@ -93,56 +50,15 @@ int OnInit()
    g_ctx.timeframe = _Period;
 
    g_ctx.settings = DefaultSettings();
-   g_ctx.settings.magic = InpMagic;
-   g_ctx.settings.risk_percent = InpRiskPercent;
-   g_ctx.settings.use_fixed_lot = InpUseFixedLot;
-   g_ctx.settings.fixed_lot = InpFixedLot;
-   g_ctx.settings.max_spread_points = InpMaxSpreadPoints;
-   g_ctx.settings.slippage_points = InpSlippagePoints;
-   g_ctx.settings.stop_loss_points = InpStopLossPoints;
-   g_ctx.settings.take_profit_points = InpTakeProfitPoints;
-   g_ctx.settings.trading_enabled = InpTradingEnabled;
-
-   g_ctx.dev = DefaultDevSettings();
-   g_ctx.dev.condition_test_mode = InpConditionTestMode;
-   g_ctx.dev.single_condition_id = InpSingleConditionId;
-   g_ctx.dev.p1_enabled = InpP1Enabled;
-   g_ctx.dev.p1_max_spread_points = InpP1MaxSpreadPoints;
-   g_ctx.dev.p1_emit_signal = InpP1EmitSignal;
-   g_ctx.dev.p1_buy_signal = InpP1BuySignal;
-   g_ctx.dev.p1_stoch_timeframe = InpP1StochTimeframe;
-   g_ctx.dev.p1_stoch_k_period = InpP1StochKPeriod;
-   g_ctx.dev.p1_stoch_d_period = InpP1StochDPeriod;
-   g_ctx.dev.p1_stoch_slowing = InpP1StochSlowing;
-   g_ctx.dev.p1_stoch_ma_method = InpP1StochMaMethod;
-   g_ctx.dev.p1_stoch_price_field = InpP1StochPriceField;
-   g_ctx.dev.p1_angle_scale = InpP1AngleScale;
-
-   g_ctx.dev.p1_main_cmp_1 = InpP1MainCmp1;
-   g_ctx.dev.p1_main_deg_1 = InpP1MainDeg1;
-   g_ctx.dev.p1_main_cmp_2 = InpP1MainCmp2;
-   g_ctx.dev.p1_main_deg_2 = InpP1MainDeg2;
-   g_ctx.dev.p1_main_cmp_3 = InpP1MainCmp3;
-   g_ctx.dev.p1_main_deg_3 = InpP1MainDeg3;
-   g_ctx.dev.p1_main_cmp_4 = InpP1MainCmp4;
-   g_ctx.dev.p1_main_deg_4 = InpP1MainDeg4;
-
-   g_ctx.dev.p1_signal_cmp_1 = InpP1SignalCmp1;
-   g_ctx.dev.p1_signal_deg_1 = InpP1SignalDeg1;
-   g_ctx.dev.p1_signal_cmp_2 = InpP1SignalCmp2;
-   g_ctx.dev.p1_signal_deg_2 = InpP1SignalDeg2;
-   g_ctx.dev.p1_signal_cmp_3 = InpP1SignalCmp3;
-   g_ctx.dev.p1_signal_deg_3 = InpP1SignalDeg3;
-   g_ctx.dev.p1_signal_cmp_4 = InpP1SignalCmp4;
-   g_ctx.dev.p1_signal_deg_4 = InpP1SignalDeg4;
-
-   g_ctx.dev.p2_enabled = InpP2Enabled;
-   g_ctx.dev.p2_emit_signal = InpP2EmitSignal;
-   g_ctx.dev.p2_buy_signal = InpP2BuySignal;
-
-   g_ctx.dev.p3_enabled = InpP3Enabled;
-   g_ctx.dev.p3_emit_signal = InpP3EmitSignal;
-   g_ctx.dev.p3_buy_signal = InpP3BuySignal;
+   g_ctx.settings.magic = InpMagickeCislo;
+   g_ctx.settings.risk_percent = InpRizikoPercent;
+   g_ctx.settings.use_fixed_lot = InpPouzitFixnyLot;
+   g_ctx.settings.fixed_lot = InpFixnyLot;
+   g_ctx.settings.max_spread_points = InpMaxSpreadBody;
+   g_ctx.settings.slippage_points = InpMaxSklzBody;
+   g_ctx.settings.stop_loss_points = InpStopLossBody;
+   g_ctx.settings.take_profit_points = InpTakeProfitBody;
+   g_ctx.settings.trading_enabled = InpPovolitObchodovanie;
 
    string err = "";
    if(!ValidateSettings(g_ctx.settings, err))
@@ -151,14 +67,7 @@ int OnInit()
       return INIT_PARAMETERS_INCORRECT;
    }
 
-   if(!ValidateDevSettings(g_ctx.dev, err))
-   {
-      Print("Dev settings validation failed: ", err);
-      return INIT_PARAMETERS_INCORRECT;
-   }
-
    g_safety.SetMaxSpreadPoints(g_ctx.settings.max_spread_points);
-   g_condition.Configure(g_ctx.dev);
    g_composite.SetPrimary(&g_condition);
 
    g_risk = new CRiskModule(&g_converter);
