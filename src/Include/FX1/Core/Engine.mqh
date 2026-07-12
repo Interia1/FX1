@@ -79,12 +79,26 @@ public:
       signal.confidence = 0.0;
       signal.reason = "none";
 
-      if(!m_condition.Evaluate(snapshot, signal))
-         return;
-      if(signal.side == SIGNAL_NONE)
-         return;
-
       SRiskDecision decision;
+      decision.allowed = false;
+      decision.volume = 0.0;
+      decision.stop_loss = 0.0;
+      decision.take_profit = 0.0;
+      decision.reason = "pending";
+
+      if(!m_condition.Evaluate(snapshot, signal))
+      {
+         decision.reason = "condition not met";
+         m_chart.Render(ctx, snapshot, signal, decision);
+         return;
+      }
+      if(signal.side == SIGNAL_NONE)
+      {
+         decision.reason = "filter-only pass";
+         m_chart.Render(ctx, snapshot, signal, decision);
+         return;
+      }
+
       if(!m_risk.BuildDecision(ctx, snapshot, signal, decision))
       {
          m_chart.Render(ctx, snapshot, signal, decision);
