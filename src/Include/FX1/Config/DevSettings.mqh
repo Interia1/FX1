@@ -32,6 +32,12 @@ enum EP1SmerSignalu
    P1_SIGNAL_BUY_AJ_SELL = 2
 };
 
+enum EP1Rezim
+{
+   LenTestP1 = 0,
+   RealSignalP1 = 1
+};
+
 struct SDevSettings
 {
    bool condition_test_mode;
@@ -39,7 +45,7 @@ struct SDevSettings
 
    bool p1_enabled;
    int p1_max_spread_points;
-   bool p1_je_len_filter;
+   EP1Rezim p1_rezim;
    EP1SmerSignalu p1_signal_mode;
 
    ENUM_TIMEFRAMES p1_stoch_timeframe;
@@ -92,6 +98,11 @@ bool IsValidP1SignalMode(const EP1SmerSignalu mode)
       mode == P1_SIGNAL_BUY_AJ_SELL);
 }
 
+bool IsValidP1Mode(const EP1Rezim mode)
+{
+   return (mode == LenTestP1 || mode == RealSignalP1);
+}
+
 SDevSettings DefaultDevSettings()
 {
    SDevSettings s;
@@ -100,7 +111,7 @@ SDevSettings DefaultDevSettings()
 
    s.p1_enabled = true;
    s.p1_max_spread_points = 25;
-   s.p1_je_len_filter = true;
+   s.p1_rezim = LenTestP1;
    s.p1_signal_mode = P1_SIGNAL_BUY;
 
    s.p1_stoch_timeframe = PERIOD_CURRENT;
@@ -163,6 +174,12 @@ bool ValidateDevSettings(const SDevSettings &s, string &err)
    if(!IsValidP1SignalMode(s.p1_signal_mode))
    {
       err = "p1_signal_mode is invalid";
+      return false;
+   }
+
+   if(!IsValidP1Mode(s.p1_rezim))
+   {
+      err = "p1_rezim is invalid";
       return false;
    }
 

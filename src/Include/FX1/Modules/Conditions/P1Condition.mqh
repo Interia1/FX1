@@ -9,7 +9,7 @@ class CP1Condition
 private:
    bool m_enabled;
    int m_max_spread_points;
-   bool m_is_filter_only;
+   EP1Rezim m_mode;
    EP1SmerSignalu m_signal_mode;
    ENUM_TIMEFRAMES m_stoch_timeframe;
    int m_stoch_k_period;
@@ -163,7 +163,7 @@ public:
       m_active_timeframe = PERIOD_CURRENT;
       m_enabled = d.p1_enabled;
       m_max_spread_points = d.p1_max_spread_points;
-      m_is_filter_only = d.p1_je_len_filter;
+      m_mode = d.p1_rezim;
       m_signal_mode = d.p1_signal_mode;
       m_stoch_timeframe = d.p1_stoch_timeframe;
       m_stoch_k_period = d.p1_stoch_k_period;
@@ -206,7 +206,7 @@ public:
 
       m_enabled = dev.p1_enabled;
       m_max_spread_points = dev.p1_max_spread_points;
-      m_is_filter_only = dev.p1_je_len_filter;
+      m_mode = dev.p1_rezim;
       m_signal_mode = dev.p1_signal_mode;
       m_stoch_timeframe = dev.p1_stoch_timeframe;
       m_stoch_k_period = dev.p1_stoch_k_period;
@@ -304,7 +304,7 @@ public:
       out_signal.reason = "P1 pass: stochastic slopes matched";
       out_signal.confidence = 1.0;
 
-      if(!m_is_filter_only)
+      if(m_mode == RealSignalP1)
       {
          if(m_signal_mode == P1_SIGNAL_BUY)
          {

@@ -46,8 +46,8 @@ input double CiastocnyVystupPercent = 50.0;   // Percento objemu na zavretie
 input group "P1 - Zaklad"
 input bool P1Zapnuta = true;                      // Zapnut podmienku P1
 input int P1MaxSpreadBody = 25;                   // Max spread pre P1 (body)
-input bool P1JeLenFilter = true;                  // Ak true, P1 vracia len splnene/nesplnene
-input EP1SmerSignalu P1SmerSignalu = P1_SIGNAL_BUY; // Pouzije sa iba ked P1JeLenFilter=false
+input EP1Rezim P1Rezim = LenTestP1;               // LenTestP1 / RealSignalP1
+input EP1SmerSignalu P1SmerSignalu = P1_SIGNAL_BUY; // Pouzije sa iba ked P1Rezim=RealSignalP1
 
 input group "P1 - Stochastic nastavenia"
 input ENUM_TIMEFRAMES P1CasovyRamecStoch = PERIOD_CURRENT; // Casovy ramec Stochastic
@@ -120,7 +120,7 @@ int OnInit()
    SDevSettings dev = DefaultDevSettings();
    dev.p1_enabled = P1Zapnuta;
    dev.p1_max_spread_points = P1MaxSpreadBody;
-   dev.p1_je_len_filter = P1JeLenFilter;
+   dev.p1_rezim = P1Rezim;
    dev.p1_signal_mode = P1SmerSignalu;
 
    dev.p1_stoch_timeframe = P1CasovyRamecStoch;
