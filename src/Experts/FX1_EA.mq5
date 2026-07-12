@@ -59,23 +59,23 @@ input ENUM_STO_PRICE P1StochCenovePole = STO_LOWHIGH; // Cenove pole
 input double P1SkalaUhlu = 2.0;                   // Skala pre vypocet uhlu
 
 input group "P1 - MAIN uhly"
-input EAngleCompare P1MainPorovnanie1 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1MainPorovnanie1 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1MainStupne1 = 0.0;
-input EAngleCompare P1MainPorovnanie2 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1MainPorovnanie2 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1MainStupne2 = 0.0;
-input EAngleCompare P1MainPorovnanie3 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1MainPorovnanie3 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1MainStupne3 = 0.0;
-input EAngleCompare P1MainPorovnanie4 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1MainPorovnanie4 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1MainStupne4 = 0.0;
 
 input group "P1 - SIGNAL uhly"
-input EAngleCompare P1SignalPorovnanie1 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1SignalPorovnanie1 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1SignalStupne1 = 0.0;
-input EAngleCompare P1SignalPorovnanie2 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1SignalPorovnanie2 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1SignalStupne2 = 0.0;
-input EAngleCompare P1SignalPorovnanie3 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1SignalPorovnanie3 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1SignalStupne3 = 0.0;
-input EAngleCompare P1SignalPorovnanie4 = ANGLE_CMP_GREATER_EQUAL;
+input EAngleCompare P1SignalPorovnanie4 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1SignalStupne4 = 0.0;
 
 SAppContext g_ctx;

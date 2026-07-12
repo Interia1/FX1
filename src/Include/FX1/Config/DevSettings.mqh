@@ -19,10 +19,10 @@ bool IsValidConditionId(const EConditionId id)
 
 enum EAngleCompare
 {
-   ANGLE_CMP_GREATER = 0,
-   ANGLE_CMP_GREATER_EQUAL = 1,
-   ANGLE_CMP_LESS = 2,
-   ANGLE_CMP_LESS_EQUAL = 3
+   UHOL_VACSIE = 0,
+   UHOL_VACSIE_ALBO_ROVNE = 1,
+   UHOL_MENSIE = 2,
+   UHOL_MENSIE_ALBO_ROVNE = 3
 };
 
 struct SDevSettings
@@ -72,10 +72,10 @@ struct SDevSettings
 
 bool IsValidAngleCompare(const EAngleCompare cmp)
 {
-   return (cmp == ANGLE_CMP_GREATER ||
-           cmp == ANGLE_CMP_GREATER_EQUAL ||
-           cmp == ANGLE_CMP_LESS ||
-           cmp == ANGLE_CMP_LESS_EQUAL);
+   return (cmp == UHOL_VACSIE ||
+      cmp == UHOL_VACSIE_ALBO_ROVNE ||
+      cmp == UHOL_MENSIE ||
+      cmp == UHOL_MENSIE_ALBO_ROVNE);
 }
 
 SDevSettings DefaultDevSettings()
@@ -97,22 +97,22 @@ SDevSettings DefaultDevSettings()
    s.p1_stoch_price_field = STO_LOWHIGH;
    s.p1_angle_scale = 2.0;
 
-   s.p1_main_cmp_1 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_cmp_1 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_main_deg_1 = 0.0;
-   s.p1_main_cmp_2 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_cmp_2 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_main_deg_2 = 0.0;
-   s.p1_main_cmp_3 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_cmp_3 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_main_deg_3 = 0.0;
-   s.p1_main_cmp_4 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_main_cmp_4 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_main_deg_4 = 0.0;
 
-   s.p1_signal_cmp_1 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_cmp_1 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_signal_deg_1 = 0.0;
-   s.p1_signal_cmp_2 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_cmp_2 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_signal_deg_2 = 0.0;
-   s.p1_signal_cmp_3 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_cmp_3 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_signal_deg_3 = 0.0;
-   s.p1_signal_cmp_4 = ANGLE_CMP_GREATER_EQUAL;
+   s.p1_signal_cmp_4 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_signal_deg_4 = 0.0;
 
    s.p2_enabled = false;

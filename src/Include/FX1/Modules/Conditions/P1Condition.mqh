@@ -86,13 +86,13 @@ private:
 
    bool CompareAngle(const double value, const EAngleCompare cmp, const double threshold) const
    {
-      if(cmp == ANGLE_CMP_GREATER)
+      if(cmp == UHOL_VACSIE)
          return value > threshold;
-      if(cmp == ANGLE_CMP_GREATER_EQUAL)
+      if(cmp == UHOL_VACSIE_ALBO_ROVNE)
          return value >= threshold;
-      if(cmp == ANGLE_CMP_LESS)
+      if(cmp == UHOL_MENSIE)
          return value < threshold;
-      if(cmp == ANGLE_CMP_LESS_EQUAL)
+      if(cmp == UHOL_MENSIE_ALBO_ROVNE)
          return value <= threshold;
       return false;
    }
@@ -143,13 +143,13 @@ private:
 
    string CompareLabel(const EAngleCompare cmp) const
    {
-      if(cmp == ANGLE_CMP_GREATER)
+      if(cmp == UHOL_VACSIE)
          return ">";
-      if(cmp == ANGLE_CMP_GREATER_EQUAL)
+      if(cmp == UHOL_VACSIE_ALBO_ROVNE)
          return ">=";
-      if(cmp == ANGLE_CMP_LESS)
+      if(cmp == UHOL_MENSIE)
          return "<";
-      if(cmp == ANGLE_CMP_LESS_EQUAL)
+      if(cmp == UHOL_MENSIE_ALBO_ROVNE)
          return "<=";
       return "?";
    }
