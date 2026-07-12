@@ -279,7 +279,8 @@ public:
          double main_angle = AngleFromValues(main_values[i], main_values[i + 1]);
          EAngleCompare main_cmp = MainCmpByIndex(i);
          double main_threshold = MainDegByIndex(i);
-         if(!CompareAngle(main_angle, main_cmp, main_threshold))
+         // Threshold 0 means "ignore this slot" for flexible 1..4 bar setups.
+         if(main_threshold != 0.0 && !CompareAngle(main_angle, main_cmp, main_threshold))
          {
             out_signal.reason = "P1 fail: MAIN b" + IntegerToString(i + 1) + " " +
                                 DoubleToString(main_angle, 2) + " not " +
@@ -291,7 +292,7 @@ public:
          double signal_angle = AngleFromValues(signal_values[i], signal_values[i + 1]);
          EAngleCompare signal_cmp = SignalCmpByIndex(i);
          double signal_threshold = SignalDegByIndex(i);
-         if(!CompareAngle(signal_angle, signal_cmp, signal_threshold))
+         if(signal_threshold != 0.0 && !CompareAngle(signal_angle, signal_cmp, signal_threshold))
          {
             out_signal.reason = "P1 fail: SIGNAL b" + IntegerToString(i + 1) + " " +
                                 DoubleToString(signal_angle, 2) + " not " +
