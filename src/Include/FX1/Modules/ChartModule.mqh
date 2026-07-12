@@ -14,13 +14,7 @@ public:
       string text = "FX1 | " + ctx.symbol +
                     " | spread=" + DoubleToString(snapshot.spread_points, 1) +
                     " | signal=" + IntegerToString((int)signal.side) +
-                    " | vol=" + DoubleToString(decision.volume, 2) +
-                    " | cond=" + signal.reason +
-                    " | risk=" + decision.reason;
-
-      if(ctx.dev.condition_test_mode)
-         text = text + " | test=P" + IntegerToString(ctx.dev.single_condition_id);
-
+                    " | vol=" + DoubleToString(decision.volume, 2);
       Comment(text);
    }
 };

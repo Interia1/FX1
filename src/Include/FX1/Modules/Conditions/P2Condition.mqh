@@ -34,7 +34,8 @@ public:
 
    bool Evaluate(const SMarketSnapshot &snapshot, SSignal &out_signal)
    {
-      (void)snapshot;
+      if(snapshot.timestamp <= 0)
+         return false;
       out_signal.side = SIGNAL_NONE;
       out_signal.confidence = 0.0;
 

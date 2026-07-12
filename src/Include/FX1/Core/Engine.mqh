@@ -80,30 +80,9 @@ public:
       signal.reason = "none";
 
       if(!m_condition.Evaluate(snapshot, signal))
-      {
-         SRiskDecision neutral_decision;
-         neutral_decision.allowed = false;
-         neutral_decision.volume = 0.0;
-         neutral_decision.stop_loss = 0.0;
-         neutral_decision.take_profit = 0.0;
-         neutral_decision.reason = signal.reason;
-
-         m_chart.Render(ctx, snapshot, signal, neutral_decision);
          return;
-      }
-
       if(signal.side == SIGNAL_NONE)
-      {
-         SRiskDecision neutral_decision;
-         neutral_decision.allowed = false;
-         neutral_decision.volume = 0.0;
-         neutral_decision.stop_loss = 0.0;
-         neutral_decision.take_profit = 0.0;
-         neutral_decision.reason = signal.reason;
-
-         m_chart.Render(ctx, snapshot, signal, neutral_decision);
          return;
-      }
 
       SRiskDecision decision;
       if(!m_risk.BuildDecision(ctx, snapshot, signal, decision))
