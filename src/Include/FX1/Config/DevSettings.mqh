@@ -25,6 +25,13 @@ enum EAngleCompare
    UHOL_MENSIE_ALBO_ROVNE = 3
 };
 
+enum EP1SmerSignalu
+{
+   P1_SIGNAL_BUY = 0,
+   P1_SIGNAL_SELL = 1,
+   P1_SIGNAL_BUY_AJ_SELL = 2
+};
+
 struct SDevSettings
 {
    bool condition_test_mode;
@@ -32,8 +39,8 @@ struct SDevSettings
 
    bool p1_enabled;
    int p1_max_spread_points;
-   bool p1_emit_signal;
-   bool p1_buy_signal;
+   bool p1_je_len_filter;
+   EP1SmerSignalu p1_signal_mode;
 
    ENUM_TIMEFRAMES p1_stoch_timeframe;
    int p1_stoch_k_period;
@@ -78,6 +85,13 @@ bool IsValidAngleCompare(const EAngleCompare cmp)
       cmp == UHOL_MENSIE_ALBO_ROVNE);
 }
 
+bool IsValidP1SignalMode(const EP1SmerSignalu mode)
+{
+   return (mode == P1_SIGNAL_BUY ||
+      mode == P1_SIGNAL_SELL ||
+      mode == P1_SIGNAL_BUY_AJ_SELL);
+}
+
 SDevSettings DefaultDevSettings()
 {
    SDevSettings s;
@@ -86,8 +100,8 @@ SDevSettings DefaultDevSettings()
 
    s.p1_enabled = true;
    s.p1_max_spread_points = 25;
-   s.p1_emit_signal = false;
-   s.p1_buy_signal = true;
+   s.p1_je_len_filter = true;
+   s.p1_signal_mode = P1_SIGNAL_BUY;
 
    s.p1_stoch_timeframe = PERIOD_CURRENT;
    s.p1_stoch_k_period = 14;
@@ -143,6 +157,12 @@ bool ValidateDevSettings(const SDevSettings &s, string &err)
    if(s.p1_max_spread_points <= 0)
    {
       err = "p1_max_spread_points must be positive";
+      return false;
+   }
+
+   if(!IsValidP1SignalMode(s.p1_signal_mode))
+   {
+      err = "p1_signal_mode is invalid";
       return false;
    }
 

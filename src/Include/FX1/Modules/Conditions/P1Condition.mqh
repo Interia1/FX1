@@ -9,8 +9,8 @@ class CP1Condition
 private:
    bool m_enabled;
    int m_max_spread_points;
-   bool m_emit_signal;
-   ESignalSide m_signal_side;
+   bool m_is_filter_only;
+   EP1SmerSignalu m_signal_mode;
    ENUM_TIMEFRAMES m_stoch_timeframe;
    int m_stoch_k_period;
    int m_stoch_d_period;
@@ -163,8 +163,8 @@ public:
       m_active_timeframe = PERIOD_CURRENT;
       m_enabled = d.p1_enabled;
       m_max_spread_points = d.p1_max_spread_points;
-      m_emit_signal = d.p1_emit_signal;
-      m_signal_side = d.p1_buy_signal ? SIGNAL_BUY : SIGNAL_SELL;
+      m_is_filter_only = d.p1_je_len_filter;
+      m_signal_mode = d.p1_signal_mode;
       m_stoch_timeframe = d.p1_stoch_timeframe;
       m_stoch_k_period = d.p1_stoch_k_period;
       m_stoch_d_period = d.p1_stoch_d_period;
@@ -206,8 +206,8 @@ public:
 
       m_enabled = dev.p1_enabled;
       m_max_spread_points = dev.p1_max_spread_points;
-      m_emit_signal = dev.p1_emit_signal;
-      m_signal_side = dev.p1_buy_signal ? SIGNAL_BUY : SIGNAL_SELL;
+      m_is_filter_only = dev.p1_je_len_filter;
+      m_signal_mode = dev.p1_signal_mode;
       m_stoch_timeframe = dev.p1_stoch_timeframe;
       m_stoch_k_period = dev.p1_stoch_k_period;
       m_stoch_d_period = dev.p1_stoch_d_period;
@@ -303,8 +303,26 @@ public:
 
       out_signal.reason = "P1 pass: stochastic slopes matched";
       out_signal.confidence = 1.0;
-      if(m_emit_signal)
-         out_signal.side = m_signal_side;
+
+      if(!m_is_filter_only)
+      {
+         if(m_signal_mode == P1_SIGNAL_BUY)
+         {
+            out_signal.side = SIGNAL_BUY;
+            out_signal.reason = "P1 pass: emit BUY";
+         }
+         else if(m_signal_mode == P1_SIGNAL_SELL)
+         {
+            out_signal.side = SIGNAL_SELL;
+            out_signal.reason = "P1 pass: emit SELL";
+         }
+         else if(m_signal_mode == P1_SIGNAL_BUY_AJ_SELL)
+         {
+            // In BOTH mode choose side from current stochastic line relation.
+            out_signal.side = (main_values[0] >= signal_values[0]) ? SIGNAL_BUY : SIGNAL_SELL;
+            out_signal.reason = "P1 pass: emit BOTH(auto side)";
+         }
+      }
 
       return true;
    }
