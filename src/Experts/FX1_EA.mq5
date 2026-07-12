@@ -45,6 +45,7 @@ input double CiastocnyVystupPercent = 50.0;   // Percento objemu na zavretie
 
 input group "Zobrazenie vystupov"
 input EVystupRezim RezimVystupu = VYSTUP_DETAILNY; // VYPNUTY/STRUCNY/DETAILNY
+input EVystupPanelPozicia PoziciaPaneluVystupov = PANEL_VLAVO_HORE; // NEUKAZOVAT/VLAVO_HORE/VPRAVO_HORE
 input bool VystupZobrazitSpread = true;
 input bool VystupZobrazitSignal = true;
 input bool VystupZobrazitP1 = true;
@@ -124,6 +125,7 @@ int OnInit()
    g_ctx.settings.partial_close_trigger_tp_percent = CiastocnyVystupSpustenieTPPercent;
    g_ctx.settings.partial_close_percent = CiastocnyVystupPercent;
    g_ctx.settings.output_mode = (int)RezimVystupu;
+   g_ctx.settings.output_panel_position = (int)PoziciaPaneluVystupov;
    g_ctx.settings.output_show_spread = VystupZobrazitSpread;
    g_ctx.settings.output_show_signal = VystupZobrazitSignal;
    g_ctx.settings.output_show_p1 = VystupZobrazitP1;
@@ -197,6 +199,7 @@ void OnDeinit(const int reason)
 
    g_ui.OnDeinitUi();
    Comment("");
+   ObjectDelete(0, "FX1_OUTPUT_PANEL");
 
    if(g_engine != NULL)
    {

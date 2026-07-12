@@ -21,6 +21,13 @@ enum EVystupRezim
    VYSTUP_DETAILNY = 2
 };
 
+enum EVystupPanelPozicia
+{
+   PANEL_NEUKAZOVAT = 0,
+   PANEL_VLAVO_HORE = 1,
+   PANEL_VPRAVO_HORE = 2
+};
+
 struct SEaSettings
 {
    long magic;
@@ -42,6 +49,7 @@ struct SEaSettings
    double partial_close_trigger_tp_percent;
    double partial_close_percent;
    int output_mode;
+   int output_panel_position;
    bool output_show_spread;
    bool output_show_signal;
    bool output_show_p1;
@@ -72,6 +80,7 @@ SEaSettings DefaultSettings()
       s.partial_close_trigger_tp_percent = 50.0;
       s.partial_close_percent = 50.0;
       s.output_mode = VYSTUP_DETAILNY;
+      s.output_panel_position = PANEL_VLAVO_HORE;
       s.output_show_spread = true;
       s.output_show_signal = true;
       s.output_show_p1 = true;
@@ -157,6 +166,11 @@ bool ValidateSettings(const SEaSettings &s, string &err)
    if(s.output_mode < VYSTUP_VYPNUTY || s.output_mode > VYSTUP_DETAILNY)
    {
       err = "output_mode out of range";
+      return false;
+   }
+   if(s.output_panel_position < PANEL_NEUKAZOVAT || s.output_panel_position > PANEL_VPRAVO_HORE)
+   {
+      err = "output_panel_position out of range";
       return false;
    }
    err = "";
