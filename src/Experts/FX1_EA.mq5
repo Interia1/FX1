@@ -43,40 +43,40 @@ input int CiastocnyVystupSpustenieBody = 120; // Pouzije sa len pre CIASTOCNY_SP
 input double CiastocnyVystupSpustenieTPPercent = 50.0; // Pouzije sa len pre CIASTOCNY_SPUSTENIE_TP_PERCENT
 input double CiastocnyVystupPercent = 50.0;   // Percento objemu na zavretie
 
-input group "P1 - Zapnutie"
-input bool P1Zapnuta = true;                  // Zapnut podmienku P1
-input int P1MaxSpreadBody = 25;               // Max spread pre P1 (body)
-input bool P1EmitovatSignal = false;          // Ak true, P1 moze emitovat BUY/SELL
-input bool P1SignalBuy = true;                // Smer signalu pri emitovani (true=BUY, false=SELL)
+input group "P1 - Zaklad"
+input bool P1Zapnuta = true;                      // Zapnut podmienku P1
+input int P1MaxSpreadBody = 25;                   // Max spread pre P1 (body)
+input bool P1EmitovatSignal = false;              // Ak true, P1 moze emitovat BUY/SELL
+input bool P1SignalBuy = true;                    // Smer signalu pri emitovani (true=BUY, false=SELL)
 
-input group "P1 - Stochastic"
-input ENUM_TIMEFRAMES P1StochTimeframe = PERIOD_CURRENT;
-input int P1StochK = 14;
-input int P1StochD = 3;
-input int P1StochSlowing = 3;
-input ENUM_MA_METHOD P1StochMAMethod = MODE_SMA;
-input ENUM_STO_PRICE P1StochPriceField = STO_LOWHIGH;
-input double P1AngleScale = 2.0;
+input group "P1 - Stochastic nastavenia"
+input ENUM_TIMEFRAMES P1CasovyRamecStoch = PERIOD_CURRENT; // Casovy ramec Stochastic
+input int P1StochKPerioda = 14;                   // K perioda
+input int P1StochDPerioda = 3;                    // D perioda
+input int P1StochSpomalenie = 3;                  // Spomalenie
+input ENUM_MA_METHOD P1StochMAMetoda = MODE_SMA;  // MA metoda
+input ENUM_STO_PRICE P1StochCenovePole = STO_LOWHIGH; // Cenove pole
+input double P1SkalaUhlu = 2.0;                   // Skala pre vypocet uhlu
 
 input group "P1 - MAIN uhly"
-input EAngleCompare P1MainCmp1 = ANGLE_CMP_GREATER_EQUAL;
-input double P1MainDeg1 = 0.0;
-input EAngleCompare P1MainCmp2 = ANGLE_CMP_GREATER_EQUAL;
-input double P1MainDeg2 = 0.0;
-input EAngleCompare P1MainCmp3 = ANGLE_CMP_GREATER_EQUAL;
-input double P1MainDeg3 = 0.0;
-input EAngleCompare P1MainCmp4 = ANGLE_CMP_GREATER_EQUAL;
-input double P1MainDeg4 = 0.0;
+input EAngleCompare P1MainPorovnanie1 = ANGLE_CMP_GREATER_EQUAL;
+input double P1MainStupne1 = 0.0;
+input EAngleCompare P1MainPorovnanie2 = ANGLE_CMP_GREATER_EQUAL;
+input double P1MainStupne2 = 0.0;
+input EAngleCompare P1MainPorovnanie3 = ANGLE_CMP_GREATER_EQUAL;
+input double P1MainStupne3 = 0.0;
+input EAngleCompare P1MainPorovnanie4 = ANGLE_CMP_GREATER_EQUAL;
+input double P1MainStupne4 = 0.0;
 
 input group "P1 - SIGNAL uhly"
-input EAngleCompare P1SignalCmp1 = ANGLE_CMP_GREATER_EQUAL;
-input double P1SignalDeg1 = 0.0;
-input EAngleCompare P1SignalCmp2 = ANGLE_CMP_GREATER_EQUAL;
-input double P1SignalDeg2 = 0.0;
-input EAngleCompare P1SignalCmp3 = ANGLE_CMP_GREATER_EQUAL;
-input double P1SignalDeg3 = 0.0;
-input EAngleCompare P1SignalCmp4 = ANGLE_CMP_GREATER_EQUAL;
-input double P1SignalDeg4 = 0.0;
+input EAngleCompare P1SignalPorovnanie1 = ANGLE_CMP_GREATER_EQUAL;
+input double P1SignalStupne1 = 0.0;
+input EAngleCompare P1SignalPorovnanie2 = ANGLE_CMP_GREATER_EQUAL;
+input double P1SignalStupne2 = 0.0;
+input EAngleCompare P1SignalPorovnanie3 = ANGLE_CMP_GREATER_EQUAL;
+input double P1SignalStupne3 = 0.0;
+input EAngleCompare P1SignalPorovnanie4 = ANGLE_CMP_GREATER_EQUAL;
+input double P1SignalStupne4 = 0.0;
 
 SAppContext g_ctx;
 
@@ -123,31 +123,31 @@ int OnInit()
    dev.p1_emit_signal = P1EmitovatSignal;
    dev.p1_buy_signal = P1SignalBuy;
 
-   dev.p1_stoch_timeframe = P1StochTimeframe;
-   dev.p1_stoch_k_period = P1StochK;
-   dev.p1_stoch_d_period = P1StochD;
-   dev.p1_stoch_slowing = P1StochSlowing;
-   dev.p1_stoch_ma_method = P1StochMAMethod;
-   dev.p1_stoch_price_field = P1StochPriceField;
-   dev.p1_angle_scale = P1AngleScale;
+   dev.p1_stoch_timeframe = P1CasovyRamecStoch;
+   dev.p1_stoch_k_period = P1StochKPerioda;
+   dev.p1_stoch_d_period = P1StochDPerioda;
+   dev.p1_stoch_slowing = P1StochSpomalenie;
+   dev.p1_stoch_ma_method = P1StochMAMetoda;
+   dev.p1_stoch_price_field = P1StochCenovePole;
+   dev.p1_angle_scale = P1SkalaUhlu;
 
-   dev.p1_main_cmp_1 = P1MainCmp1;
-   dev.p1_main_deg_1 = P1MainDeg1;
-   dev.p1_main_cmp_2 = P1MainCmp2;
-   dev.p1_main_deg_2 = P1MainDeg2;
-   dev.p1_main_cmp_3 = P1MainCmp3;
-   dev.p1_main_deg_3 = P1MainDeg3;
-   dev.p1_main_cmp_4 = P1MainCmp4;
-   dev.p1_main_deg_4 = P1MainDeg4;
+   dev.p1_main_cmp_1 = P1MainPorovnanie1;
+   dev.p1_main_deg_1 = P1MainStupne1;
+   dev.p1_main_cmp_2 = P1MainPorovnanie2;
+   dev.p1_main_deg_2 = P1MainStupne2;
+   dev.p1_main_cmp_3 = P1MainPorovnanie3;
+   dev.p1_main_deg_3 = P1MainStupne3;
+   dev.p1_main_cmp_4 = P1MainPorovnanie4;
+   dev.p1_main_deg_4 = P1MainStupne4;
 
-   dev.p1_signal_cmp_1 = P1SignalCmp1;
-   dev.p1_signal_deg_1 = P1SignalDeg1;
-   dev.p1_signal_cmp_2 = P1SignalCmp2;
-   dev.p1_signal_deg_2 = P1SignalDeg2;
-   dev.p1_signal_cmp_3 = P1SignalCmp3;
-   dev.p1_signal_deg_3 = P1SignalDeg3;
-   dev.p1_signal_cmp_4 = P1SignalCmp4;
-   dev.p1_signal_deg_4 = P1SignalDeg4;
+   dev.p1_signal_cmp_1 = P1SignalPorovnanie1;
+   dev.p1_signal_deg_1 = P1SignalStupne1;
+   dev.p1_signal_cmp_2 = P1SignalPorovnanie2;
+   dev.p1_signal_deg_2 = P1SignalStupne2;
+   dev.p1_signal_cmp_3 = P1SignalPorovnanie3;
+   dev.p1_signal_deg_3 = P1SignalStupne3;
+   dev.p1_signal_cmp_4 = P1SignalPorovnanie4;
+   dev.p1_signal_deg_4 = P1SignalStupne4;
 
    string err = "";
    if(!ValidateSettings(g_ctx.settings, err))
