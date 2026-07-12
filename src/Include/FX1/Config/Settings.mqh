@@ -14,6 +14,13 @@ enum ECiastocnyVystupSpustenieRezim
    CIASTOCNY_SPUSTENIE_TP_PERCENT = 1
 };
 
+enum EVystupRezim
+{
+   VYSTUP_VYPNUTY = 0,
+   VYSTUP_STRUCNY = 1,
+   VYSTUP_DETAILNY = 2
+};
+
 struct SEaSettings
 {
    long magic;
@@ -34,6 +41,12 @@ struct SEaSettings
    int partial_close_trigger_points;
    double partial_close_trigger_tp_percent;
    double partial_close_percent;
+   int output_mode;
+   bool output_show_spread;
+   bool output_show_signal;
+   bool output_show_p1;
+   bool output_show_risk;
+   bool output_show_volume;
    bool trading_enabled;
 };
 
@@ -58,6 +71,12 @@ SEaSettings DefaultSettings()
       s.partial_close_trigger_points = 120;
       s.partial_close_trigger_tp_percent = 50.0;
       s.partial_close_percent = 50.0;
+      s.output_mode = VYSTUP_DETAILNY;
+      s.output_show_spread = true;
+      s.output_show_signal = true;
+      s.output_show_p1 = true;
+      s.output_show_risk = true;
+      s.output_show_volume = true;
    s.trading_enabled = true;
    return s;
 }
@@ -134,6 +153,11 @@ bool ValidateSettings(const SEaSettings &s, string &err)
          err = "partial_close_percent out of range (0, 100)";
          return false;
       }
+   }
+   if(s.output_mode < VYSTUP_VYPNUTY || s.output_mode > VYSTUP_DETAILNY)
+   {
+      err = "output_mode out of range";
+      return false;
    }
    err = "";
    return true;

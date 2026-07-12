@@ -43,6 +43,14 @@ input int CiastocnyVystupSpustenieBody = 120; // Pouzije sa len pre CIASTOCNY_SP
 input double CiastocnyVystupSpustenieTPPercent = 50.0; // Pouzije sa len pre CIASTOCNY_SPUSTENIE_TP_PERCENT
 input double CiastocnyVystupPercent = 50.0;   // Percento objemu na zavretie
 
+input group "Zobrazenie vystupov"
+input EVystupRezim RezimVystupu = VYSTUP_DETAILNY; // VYPNUTY/STRUCNY/DETAILNY
+input bool VystupZobrazitSpread = true;
+input bool VystupZobrazitSignal = true;
+input bool VystupZobrazitP1 = true;
+input bool VystupZobrazitRiziko = true;
+input bool VystupZobrazitObjem = true;
+
 input group "P1 - Zaklad"
 input bool P1Zapnuta = true;                      // Zapnut podmienku P1
 input int P1MaxSpreadBody = 25;                   // Max spread pre P1 (body)
@@ -115,6 +123,12 @@ int OnInit()
    g_ctx.settings.partial_close_trigger_points = CiastocnyVystupSpustenieBody;
    g_ctx.settings.partial_close_trigger_tp_percent = CiastocnyVystupSpustenieTPPercent;
    g_ctx.settings.partial_close_percent = CiastocnyVystupPercent;
+   g_ctx.settings.output_mode = (int)RezimVystupu;
+   g_ctx.settings.output_show_spread = VystupZobrazitSpread;
+   g_ctx.settings.output_show_signal = VystupZobrazitSignal;
+   g_ctx.settings.output_show_p1 = VystupZobrazitP1;
+   g_ctx.settings.output_show_risk = VystupZobrazitRiziko;
+   g_ctx.settings.output_show_volume = VystupZobrazitObjem;
    g_ctx.settings.trading_enabled = PovolitObchodovanie;
 
    SDevSettings dev = DefaultDevSettings();
