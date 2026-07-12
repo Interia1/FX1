@@ -8,6 +8,44 @@ class CRiskModule : public IRiskManager
 private:
    IUnitConverter *m_converter;
 
+   double VolumeByRiskPercent(const SAppContext &ctx, const SMarketSnapshot &snapshot)
+   {
+      double risk_money = AccountInfoDouble(ACCOUNT_BALANCE) * (ctx.settings.risk_percent / 100.0);
+      double value_per_point_per_lot = 0.0;
+      if(snapshot.tick_size > 0.0)
+         value_per_point_per_lot = snapshot.tick_value * (snapshot.point / snapshot.tick_size);
+
+      if(value_per_point_per_lot <= 0.0)
+         return 0.0;
+
+      double money_at_sl_one_lot = value_per_point_per_lot * (double)ctx.settings.stop_loss_points;
+      if(money_at_sl_one_lot <= 0.0)
+         return 0.0;
+
+      return risk_money / money_at_sl_one_lot;
+   }
+
+   double VolumeByMarginPercent(const SAppContext &ctx, const SMarketSnapshot &snapshot, const ESignalSide side)
+   {
+      double free_margin = AccountInfoDouble(ACCOUNT_FREEMARGIN);
+      if(free_margin <= 0.0)
+         return 0.0;
+
+      double desired_margin = free_margin * (ctx.settings.margin_percent / 100.0);
+      if(desired_margin <= 0.0)
+         return 0.0;
+
+      ENUM_ORDER_TYPE order_type = (side == SIGNAL_BUY) ? ORDER_TYPE_BUY : ORDER_TYPE_SELL;
+      double entry_price = (side == SIGNAL_BUY) ? snapshot.ask : snapshot.bid;
+      double margin_for_one_lot = 0.0;
+      if(!OrderCalcMargin(order_type, ctx.symbol, 1.0, entry_price, margin_for_one_lot))
+         return 0.0;
+      if(margin_for_one_lot <= 0.0)
+         return 0.0;
+
+      return desired_margin / margin_for_one_lot;
+   }
+
 public:
    CRiskModule(IUnitConverter *converter) : m_converter(converter) {}
 
@@ -41,19 +79,19 @@ public:
       }
 
       double volume = ctx.settings.fixed_lot;
-      if(!ctx.settings.use_fixed_lot)
-      {
-         double risk_money = AccountInfoDouble(ACCOUNT_BALANCE) * (ctx.settings.risk_percent / 100.0);
-         double value_per_point_per_lot = 0.0;
-         if(snapshot.tick_size > 0.0)
-            value_per_point_per_lot = snapshot.tick_value * (snapshot.point / snapshot.tick_size);
 
-         if(value_per_point_per_lot > 0.0)
-         {
-            double money_at_sl_one_lot = value_per_point_per_lot * (double)ctx.settings.stop_loss_points;
-            if(money_at_sl_one_lot > 0.0)
-               volume = risk_money / money_at_sl_one_lot;
-         }
+      if(ctx.settings.volume_mode == OBJEM_RIZIKO_PERCENT)
+      {
+         volume = VolumeByRiskPercent(ctx, snapshot);
+      }
+      else if(ctx.settings.volume_mode == OBJEM_MARZA_PERCENT)
+      {
+         volume = VolumeByMarginPercent(ctx, snapshot, signal.side);
+      }
+      else if(!ctx.settings.use_fixed_lot)
+      {
+         // Backward-compatibility path for older presets.
+         volume = VolumeByRiskPercent(ctx, snapshot);
       }
 
       out_decision.volume = m_converter.NormalizeVolume(ctx.symbol, volume);

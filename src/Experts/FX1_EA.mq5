@@ -22,14 +22,24 @@ input long MagickeCisloEA = 51001;       // Magic cislo EA
 
 input group "Riziko a objem"
 input double RizikoPercent = 1.0;       // Riziko na obchod (%)
+input double MarzaPercent = 5.0;        // Percento z volnej marze na vstup
 input bool PouzitFixnyLot = true;       // Pouzit fixny lot
 input double FixnyLot = 0.10;           // Fixny lot
+input EObjemRezim RezimObjemu = OBJEM_FIXNY_LOT; // Rezim vypoctu objemu
 
 input group "Exekucia a limity"
 input int MaxSpreadBody = 25;       // Max spread (body)
 input int MaxSklzBody = 20;         // Max sklz (body)
 input int StopLossBody = 200;       // Stop Loss (body)
 input int TakeProfitBody = 300;     // Take Profit (body)
+
+input group "Sprava pozicie"
+input bool ZapnutTrailingStop = true;      // Zapnut trailing stop
+input int TrailingStartBody = 150;         // Aktivacia trailingu (body zisku)
+input int TrailingKrokBody = 50;           // Minimalny krok posunu trailingu (body)
+input bool ZapnutCiastocnyVystup = true;   // Zapnut partial close
+input int CiastocnyVystupSpustenieBody = 120; // Spustenie partial close (body zisku)
+input double CiastocnyVystupPercent = 50.0;   // Percento objemu na zavretie
 
 SAppContext g_ctx;
 
@@ -52,12 +62,20 @@ int OnInit()
    g_ctx.settings = DefaultSettings();
    g_ctx.settings.magic = MagickeCisloEA;
    g_ctx.settings.risk_percent = RizikoPercent;
+   g_ctx.settings.margin_percent = MarzaPercent;
    g_ctx.settings.use_fixed_lot = PouzitFixnyLot;
    g_ctx.settings.fixed_lot = FixnyLot;
+   g_ctx.settings.volume_mode = (int)RezimObjemu;
    g_ctx.settings.max_spread_points = MaxSpreadBody;
    g_ctx.settings.slippage_points = MaxSklzBody;
    g_ctx.settings.stop_loss_points = StopLossBody;
    g_ctx.settings.take_profit_points = TakeProfitBody;
+   g_ctx.settings.trailing_enabled = ZapnutTrailingStop;
+   g_ctx.settings.trailing_start_points = TrailingStartBody;
+   g_ctx.settings.trailing_step_points = TrailingKrokBody;
+   g_ctx.settings.partial_close_enabled = ZapnutCiastocnyVystup;
+   g_ctx.settings.partial_close_trigger_points = CiastocnyVystupSpustenieBody;
+   g_ctx.settings.partial_close_percent = CiastocnyVystupPercent;
    g_ctx.settings.trading_enabled = PovolitObchodovanie;
 
    string err = "";

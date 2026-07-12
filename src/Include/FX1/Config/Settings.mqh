@@ -1,16 +1,31 @@
 #ifndef FX1_SETTINGS_MQH
 #define FX1_SETTINGS_MQH
 
+enum EObjemRezim
+{
+   OBJEM_FIXNY_LOT = 0,
+   OBJEM_RIZIKO_PERCENT = 1,
+   OBJEM_MARZA_PERCENT = 2
+};
+
 struct SEaSettings
 {
    long magic;
    double risk_percent;
+   double margin_percent;
    double fixed_lot;
+   int volume_mode;
    bool use_fixed_lot;
    int max_spread_points;
    int slippage_points;
    int stop_loss_points;
    int take_profit_points;
+   bool trailing_enabled;
+   int trailing_start_points;
+   int trailing_step_points;
+   bool partial_close_enabled;
+   int partial_close_trigger_points;
+   double partial_close_percent;
    bool trading_enabled;
 };
 
@@ -19,12 +34,20 @@ SEaSettings DefaultSettings()
    SEaSettings s;
    s.magic = 51001;
    s.risk_percent = 1.0;
+      s.margin_percent = 5.0;
    s.fixed_lot = 0.10;
+      s.volume_mode = OBJEM_FIXNY_LOT;
    s.use_fixed_lot = true;
    s.max_spread_points = 25;
    s.slippage_points = 20;
    s.stop_loss_points = 200;
    s.take_profit_points = 300;
+      s.trailing_enabled = true;
+      s.trailing_start_points = 150;
+      s.trailing_step_points = 50;
+      s.partial_close_enabled = true;
+      s.partial_close_trigger_points = 120;
+      s.partial_close_percent = 50.0;
    s.trading_enabled = true;
    return s;
 }
@@ -41,9 +64,19 @@ bool ValidateSettings(const SEaSettings &s, string &err)
       err = "risk_percent out of range (0, 10]";
       return false;
    }
+   if(s.margin_percent <= 0.0 || s.margin_percent > 100.0)
+   {
+      err = "margin_percent out of range (0, 100]";
+      return false;
+   }
    if(s.fixed_lot <= 0.0)
    {
       err = "fixed_lot must be positive";
+      return false;
+   }
+   if(s.volume_mode < OBJEM_FIXNY_LOT || s.volume_mode > OBJEM_MARZA_PERCENT)
+   {
+      err = "volume_mode out of range";
       return false;
    }
    if(s.max_spread_points <= 0)
@@ -60,6 +93,27 @@ bool ValidateSettings(const SEaSettings &s, string &err)
    {
       err = "stop_loss_points and take_profit_points must be positive";
       return false;
+   }
+   if(s.trailing_enabled)
+   {
+      if(s.trailing_start_points <= 0 || s.trailing_step_points <= 0)
+      {
+         err = "trailing_start_points and trailing_step_points must be positive";
+         return false;
+      }
+   }
+   if(s.partial_close_enabled)
+   {
+      if(s.partial_close_trigger_points <= 0)
+      {
+         err = "partial_close_trigger_points must be positive";
+         return false;
+      }
+      if(s.partial_close_percent <= 0.0 || s.partial_close_percent >= 100.0)
+      {
+         err = "partial_close_percent out of range (0, 100)";
+         return false;
+      }
    }
    err = "";
    return true;
