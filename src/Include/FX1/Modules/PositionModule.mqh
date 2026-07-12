@@ -113,7 +113,11 @@ private:
                              ? ((market_price - open_price) / point)
                              : ((open_price - market_price) / point);
 
-      if(profit_points < ctx.settings.partial_close_trigger_points)
+      double trigger_points = (double)ctx.settings.partial_close_trigger_points;
+      if(ctx.settings.partial_close_trigger_mode == CIASTOCNY_SPUSTENIE_TP_PERCENT)
+         trigger_points = (double)ctx.settings.take_profit_points * (ctx.settings.partial_close_trigger_tp_percent / 100.0);
+
+      if(profit_points < trigger_points)
          return;
 
       double close_volume_raw = position_volume * (ctx.settings.partial_close_percent / 100.0);

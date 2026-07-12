@@ -8,6 +8,12 @@ enum EObjemRezim
    OBJEM_MARZA_PERCENT = 2
 };
 
+enum ECiastocnyVystupSpustenieRezim
+{
+   CIASTOCNY_SPUSTENIE_BODY = 0,
+   CIASTOCNY_SPUSTENIE_TP_PERCENT = 1
+};
+
 struct SEaSettings
 {
    long magic;
@@ -24,7 +30,9 @@ struct SEaSettings
    int trailing_start_points;
    int trailing_step_points;
    bool partial_close_enabled;
+   int partial_close_trigger_mode;
    int partial_close_trigger_points;
+   double partial_close_trigger_tp_percent;
    double partial_close_percent;
    bool trading_enabled;
 };
@@ -46,7 +54,9 @@ SEaSettings DefaultSettings()
       s.trailing_start_points = 150;
       s.trailing_step_points = 50;
       s.partial_close_enabled = true;
+      s.partial_close_trigger_mode = CIASTOCNY_SPUSTENIE_BODY;
       s.partial_close_trigger_points = 120;
+      s.partial_close_trigger_tp_percent = 50.0;
       s.partial_close_percent = 50.0;
    s.trading_enabled = true;
    return s;
@@ -104,9 +114,19 @@ bool ValidateSettings(const SEaSettings &s, string &err)
    }
    if(s.partial_close_enabled)
    {
+      if(s.partial_close_trigger_mode < CIASTOCNY_SPUSTENIE_BODY || s.partial_close_trigger_mode > CIASTOCNY_SPUSTENIE_TP_PERCENT)
+      {
+         err = "partial_close_trigger_mode out of range";
+         return false;
+      }
       if(s.partial_close_trigger_points <= 0)
       {
          err = "partial_close_trigger_points must be positive";
+         return false;
+      }
+      if(s.partial_close_trigger_tp_percent <= 0.0 || s.partial_close_trigger_tp_percent > 100.0)
+      {
+         err = "partial_close_trigger_tp_percent out of range (0, 100]";
          return false;
       }
       if(s.partial_close_percent <= 0.0 || s.partial_close_percent >= 100.0)
