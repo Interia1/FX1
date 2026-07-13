@@ -77,6 +77,17 @@ private:
       return true;
    }
 
+   bool LoadBufferValue(const int buffer_index, const int shift, double &value) const
+   {
+      double one[1];
+      int copied = CopyBuffer(m_stoch_handle, buffer_index, shift, 1, one);
+      if(copied != 1)
+         return false;
+
+      value = one[0];
+      return true;
+   }
+
    double AngleFromValues(const double current, const double previous) const
    {
       const double pi = 3.14159265358979323846;
@@ -266,12 +277,16 @@ public:
 
       double main_values[5];
       double signal_values[5];
-      int copied_main = CopyBuffer(m_stoch_handle, 0, 1, 5, main_values);
-      int copied_signal = CopyBuffer(m_stoch_handle, 1, 1, 5, signal_values);
-      if(copied_main != 5 || copied_signal != 5)
+      for(int i = 0; i < 5; i++)
       {
-         out_signal.reason = "P1 fail: insufficient stochastic data";
-         return false;
+         // Shift 1 is the last closed bar, shift 2 is one bar older, etc.
+         int shift = i + 1;
+         if(!LoadBufferValue(0, shift, main_values[i]) ||
+            !LoadBufferValue(1, shift, signal_values[i]))
+         {
+            out_signal.reason = "P1 fail: insufficient stochastic data";
+            return false;
+         }
       }
 
       for(int i = 0; i < 4; i++)
