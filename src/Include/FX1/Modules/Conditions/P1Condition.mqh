@@ -26,6 +26,9 @@ private:
    double m_main_deg_3;
    EAngleCompare m_main_cmp_4;
    double m_main_deg_4;
+   bool m_main_level_enabled;
+   EAngleCompare m_main_level_cmp;
+   double m_main_level_value;
    EAngleCompare m_signal_cmp_1;
    double m_signal_deg_1;
    EAngleCompare m_signal_cmp_2;
@@ -34,6 +37,9 @@ private:
    double m_signal_deg_3;
    EAngleCompare m_signal_cmp_4;
    double m_signal_deg_4;
+   bool m_signal_level_enabled;
+   EAngleCompare m_signal_level_cmp;
+   double m_signal_level_value;
    int m_stoch_handle;
    string m_stoch_symbol;
    ENUM_TIMEFRAMES m_active_timeframe;
@@ -180,6 +186,9 @@ public:
       m_main_deg_3 = d.p1_main_deg_3;
       m_main_cmp_4 = d.p1_main_cmp_4;
       m_main_deg_4 = d.p1_main_deg_4;
+      m_main_level_enabled = d.p1_main_level_enabled;
+      m_main_level_cmp = d.p1_main_level_cmp;
+      m_main_level_value = d.p1_main_level_value;
       m_signal_cmp_1 = d.p1_signal_cmp_1;
       m_signal_deg_1 = d.p1_signal_deg_1;
       m_signal_cmp_2 = d.p1_signal_cmp_2;
@@ -188,6 +197,9 @@ public:
       m_signal_deg_3 = d.p1_signal_deg_3;
       m_signal_cmp_4 = d.p1_signal_cmp_4;
       m_signal_deg_4 = d.p1_signal_deg_4;
+      m_signal_level_enabled = d.p1_signal_level_enabled;
+      m_signal_level_cmp = d.p1_signal_level_cmp;
+      m_signal_level_value = d.p1_signal_level_value;
    }
 
    ~CP1Condition()
@@ -223,6 +235,9 @@ public:
       m_main_deg_3 = dev.p1_main_deg_3;
       m_main_cmp_4 = dev.p1_main_cmp_4;
       m_main_deg_4 = dev.p1_main_deg_4;
+      m_main_level_enabled = dev.p1_main_level_enabled;
+      m_main_level_cmp = dev.p1_main_level_cmp;
+      m_main_level_value = dev.p1_main_level_value;
       m_signal_cmp_1 = dev.p1_signal_cmp_1;
       m_signal_deg_1 = dev.p1_signal_deg_1;
       m_signal_cmp_2 = dev.p1_signal_cmp_2;
@@ -231,6 +246,9 @@ public:
       m_signal_deg_3 = dev.p1_signal_deg_3;
       m_signal_cmp_4 = dev.p1_signal_cmp_4;
       m_signal_deg_4 = dev.p1_signal_deg_4;
+      m_signal_level_enabled = dev.p1_signal_level_enabled;
+      m_signal_level_cmp = dev.p1_signal_level_cmp;
+      m_signal_level_value = dev.p1_signal_level_value;
 
       if(stoch_changed)
          ResetHandle();
@@ -271,6 +289,24 @@ public:
       if(copied_main != 5 || copied_signal != 5)
       {
          out_signal.reason = "P1 fail: insufficient stochastic data";
+         return false;
+      }
+
+      if(m_main_level_enabled && !CompareAngle(main_values[0], m_main_level_cmp, m_main_level_value))
+      {
+         out_signal.reason = "P1 fail: MAIN level " +
+                             DoubleToString(main_values[0], 2) + " not " +
+                             CompareLabel(m_main_level_cmp) + " " +
+                             DoubleToString(m_main_level_value, 2);
+         return false;
+      }
+
+      if(m_signal_level_enabled && !CompareAngle(signal_values[0], m_signal_level_cmp, m_signal_level_value))
+      {
+         out_signal.reason = "P1 fail: SIGNAL level " +
+                             DoubleToString(signal_values[0], 2) + " not " +
+                             CompareLabel(m_signal_level_cmp) + " " +
+                             DoubleToString(m_signal_level_value, 2);
          return false;
       }
 

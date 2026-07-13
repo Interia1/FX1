@@ -64,6 +64,9 @@ struct SDevSettings
    double p1_main_deg_3;
    EAngleCompare p1_main_cmp_4;
    double p1_main_deg_4;
+   bool p1_main_level_enabled;
+   EAngleCompare p1_main_level_cmp;
+   double p1_main_level_value;
 
    EAngleCompare p1_signal_cmp_1;
    double p1_signal_deg_1;
@@ -73,6 +76,9 @@ struct SDevSettings
    double p1_signal_deg_3;
    EAngleCompare p1_signal_cmp_4;
    double p1_signal_deg_4;
+   bool p1_signal_level_enabled;
+   EAngleCompare p1_signal_level_cmp;
+   double p1_signal_level_value;
 
    bool p2_enabled;
    bool p2_emit_signal;
@@ -130,6 +136,9 @@ SDevSettings DefaultDevSettings()
    s.p1_main_deg_3 = 0.0;
    s.p1_main_cmp_4 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_main_deg_4 = 0.0;
+   s.p1_main_level_enabled = false;
+   s.p1_main_level_cmp = UHOL_VACSIE_ALBO_ROVNE;
+   s.p1_main_level_value = 50.0;
 
    s.p1_signal_cmp_1 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_signal_deg_1 = 0.0;
@@ -139,6 +148,9 @@ SDevSettings DefaultDevSettings()
    s.p1_signal_deg_3 = 0.0;
    s.p1_signal_cmp_4 = UHOL_VACSIE_ALBO_ROVNE;
    s.p1_signal_deg_4 = 0.0;
+   s.p1_signal_level_enabled = false;
+   s.p1_signal_level_cmp = UHOL_VACSIE_ALBO_ROVNE;
+   s.p1_signal_level_value = 50.0;
 
    s.p2_enabled = false;
    s.p2_emit_signal = false;
@@ -212,12 +224,21 @@ bool ValidateDevSettings(const SDevSettings &s, string &err)
       !IsValidAngleCompare(s.p1_main_cmp_2) ||
       !IsValidAngleCompare(s.p1_main_cmp_3) ||
       !IsValidAngleCompare(s.p1_main_cmp_4) ||
+      !IsValidAngleCompare(s.p1_main_level_cmp) ||
       !IsValidAngleCompare(s.p1_signal_cmp_1) ||
       !IsValidAngleCompare(s.p1_signal_cmp_2) ||
       !IsValidAngleCompare(s.p1_signal_cmp_3) ||
-      !IsValidAngleCompare(s.p1_signal_cmp_4))
+      !IsValidAngleCompare(s.p1_signal_cmp_4) ||
+      !IsValidAngleCompare(s.p1_signal_level_cmp))
    {
       err = "p1 angle compare mode is invalid";
+      return false;
+   }
+
+   if((s.p1_main_level_enabled && (s.p1_main_level_value < 0.0 || s.p1_main_level_value > 100.0)) ||
+      (s.p1_signal_level_enabled && (s.p1_signal_level_value < 0.0 || s.p1_signal_level_value > 100.0)))
+   {
+      err = "p1 stochastic level must be in range [0, 100]";
       return false;
    }
 

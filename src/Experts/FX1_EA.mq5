@@ -87,6 +87,14 @@ input double P1SignalStupne3 = 0.0;
 input EAngleCompare P1SignalPorovnanie4 = UHOL_VACSIE_ALBO_ROVNE;
 input double P1SignalStupne4 = 0.0;
 
+input group "P1 - Urovne"
+input bool P1MainUrovenZapnuta = false;
+input EAngleCompare P1MainUrovenPorovnanie = UHOL_VACSIE_ALBO_ROVNE;
+input double P1MainUrovenHodnota = 50.0;
+input bool P1SignalUrovenZapnuta = false;
+input EAngleCompare P1SignalUrovenPorovnanie = UHOL_VACSIE_ALBO_ROVNE;
+input double P1SignalUrovenHodnota = 50.0;
+
 SAppContext g_ctx;
 
 CUnitConversionModule g_converter;
@@ -164,6 +172,12 @@ int OnInit()
    dev.p1_signal_deg_3 = P1SignalStupne3;
    dev.p1_signal_cmp_4 = P1SignalPorovnanie4;
    dev.p1_signal_deg_4 = P1SignalStupne4;
+   dev.p1_main_level_enabled = P1MainUrovenZapnuta;
+   dev.p1_main_level_cmp = P1MainUrovenPorovnanie;
+   dev.p1_main_level_value = P1MainUrovenHodnota;
+   dev.p1_signal_level_enabled = P1SignalUrovenZapnuta;
+   dev.p1_signal_level_cmp = P1SignalUrovenPorovnanie;
+   dev.p1_signal_level_value = P1SignalUrovenHodnota;
 
    string err = "";
    if(!ValidateSettings(g_ctx.settings, err))
